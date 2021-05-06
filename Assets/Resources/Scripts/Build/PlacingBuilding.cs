@@ -10,7 +10,7 @@ public class PlacingBuilding: MonoBehaviour
 
     public Vector2Int gridSize = new Vector2Int(11, 11);
 
-    public GameObject[] wall; //кубы из которых состоит путь
+    [SerializeField] private GameObject[] wall; //кубы из которых состоит путь
     private List<GameObject> way = new List<GameObject>(); //список кубов, по которым будет проходить путь
     public List<GameObject> Way
     {
@@ -170,12 +170,12 @@ public class PlacingBuilding: MonoBehaviour
 
             if (flyingBuilding.CompareTag("Tower"))
             {
-                towerTrigger = flyingBuilding.GetComponent<TowerTrigger>();
-                towerTrigger.enabled = false;
-                towerShoot = flyingBuilding.GetComponent<TowerShoot>();
+                //towerTrigger = flyingBuilding.GetComponent<TowerTrigger>();
+                //towerTrigger.enabled = false;
+                towerShoot = flyingBuilding.GetComponentInChildren<TowerShoot>();
                 towerShoot.isShoot = true;
                 towerAnimator = flyingBuilding.GetComponent<Animator>();
-                towerAnimator.enabled = false;
+                //towerAnimator.enabled = false;
                 value = 1;
             }
             else if (flyingBuilding.CompareTag("Obstacle"))
@@ -200,9 +200,9 @@ public class PlacingBuilding: MonoBehaviour
             if(val == 1)
             {
                 coll.isTrigger = false;
-                towerTrigger.enabled = true;
+                //towerTrigger.enabled = true;
                 towerShoot.isShoot = false;
-                towerAnimator.enabled = true;
+                //towerAnimator.enabled = true;
             }
             if (val == 2)
             {

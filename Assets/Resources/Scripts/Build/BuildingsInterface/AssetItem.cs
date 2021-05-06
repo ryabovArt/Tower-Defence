@@ -10,8 +10,7 @@ public class AssetItem : ScriptableObject, ITower
     public Button UIButton => uiButton;
     public Sprite BuildingImage => buildingImage;
     public GameObject BuildingObject => buildingObject;
-
-    public int BuildingHealth => buildingHealth;
+    public int BuildingHealth { get => buildingHealth; set => buildingHealth = value; }
 
     [SerializeField] private new string name;
     [SerializeField] private Button uiButton;

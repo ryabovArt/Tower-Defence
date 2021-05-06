@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 2138832753460482999}
   - component: {fileID: 4589294535358220053}
   - component: {fileID: -3006436150247677830}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Enemy_2
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -176,11 +176,12 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8402161726248578973}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1e7c0fafd445cb34ea02b851aa3b6d2f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   damage: 10
-  health: 50
-  armour: 0
+  DestroyObstacleEvent:
+    m_PersistentCalls:
+      m_Calls: []

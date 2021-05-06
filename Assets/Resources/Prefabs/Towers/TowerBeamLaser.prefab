@@ -646,12 +646,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 06953695b627c5340b8175c2a3bd2030, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shootElement: {fileID: 400016}
   lookAtObject: {fileID: 400014}
   damage: 10
   bullet: {fileID: 8105159009470134273, guid: 77070bee51616ba46b19a45ed0f6c190, type: 3}
-  timeBetweenShoot: 1
-  target: {fileID: 0}
+  timeBetweenShoot: 5
+  shootElement: {fileID: 400016}
 --- !u!95 &4371520078415933058
 Animator:
   serializedVersion: 3
@@ -696,8 +695,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9bd0f9732d5771949a6bb7a48cb675d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tower: {fileID: 5694791314940246084}
-  currentTarget: {fileID: 0}
   towerAnimator: {fileID: 4371520078415933058}
 --- !u!1 &7411389358303713646
 GameObject:
@@ -756,6 +753,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9bd0f9732d5771949a6bb7a48cb675d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tower: {fileID: 5694791314940246084}
-  currentTarget: {fileID: 0}
   towerAnimator: {fileID: 4371520078415933058}

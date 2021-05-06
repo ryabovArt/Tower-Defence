@@ -2,39 +2,68 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(TowerFieldOfView))]
 public class TowerShoot : TowersBehaviour
 {
+    private TowerFieldOfView tower;
+
     [SerializeField] private Transform shootElement; // стрелюящая часть башни
+
+    [Header("Интервал удара")]
+    [SerializeField] private float timeBetweenShoot;
 
     internal Transform target;
     internal bool isShoot;
+    GameObject blt;
+
+    private void Start()
+    {
+        tower = GetComponent<TowerFieldOfView>();
+    }
 
     void Update()
     {
-        if(target)
+        if (!isShoot)
         {
-            lookAtObject.transform.LookAt(target);
-            if (!isShoot)
-            {
-                StartCoroutine(Shoot());
-            }
+            StartCoroutine(Attack());
         }
     }
 
     /// <summary>
-    /// Выстрел
+    /// Атака
     /// </summary>
     /// <returns></returns>
-    public override IEnumerator Shoot()
+    public override IEnumerator Attack()
     {
-        isShoot = true;
-        GameObject blt = GameObject.Instantiate(bullet, shootElement.position, Quaternion.identity) as GameObject;
-        //Debug.Log(bullet);
-        blt.GetComponent<BulletTower>().target = target;
+        StartCoroutine(Shoot());
 
-        yield return new WaitForSeconds(timeBetweenShoot);
+        yield return new WaitForSeconds(timeBetweenAttack);
 
-        if (!target) Destroy(blt.gameObject);
         isShoot = !isShoot;
+    }
+
+    /// <summary>
+    /// Удар
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator Shoot()
+    {
+        int i = 0;
+        while (i < 2)
+        {
+            isShoot = true;
+
+            foreach (var visiblrTarget in tower.visibleTargets)
+            {
+                if (visiblrTarget != null)
+                {
+                    blt = GameObject.Instantiate(bullet, shootElement.position, Quaternion.identity) as GameObject;
+                    blt.GetComponent<BulletTower>().target = visiblrTarget;
+                    if (visiblrTarget == null) Destroy(blt.gameObject);
+                }
+            }
+            yield return new WaitForSeconds(0.5f);
+            i++;
+        }
     }
 }

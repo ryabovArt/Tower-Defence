@@ -15,5 +15,5 @@ MonoBehaviour:
   enemyName: Enemy_2
   enemyObject: {fileID: 8402161726248578973, guid: cbc0d30dc10627247b660266f2ce0177, type: 3}
   enemyHealth: 70
-  spawnAmount: 10
+  spawnAmount: 3
   spawnDelay: 2

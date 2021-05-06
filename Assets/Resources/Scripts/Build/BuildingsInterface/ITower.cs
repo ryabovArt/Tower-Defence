@@ -9,5 +9,5 @@ public interface ITower
     Button UIButton { get; }
     Sprite BuildingImage { get; }
     GameObject BuildingObject { get; }
-    int BuildingHealth { get; }
+    int BuildingHealth { get; set; }
 }

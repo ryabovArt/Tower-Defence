@@ -7,7 +7,8 @@ public abstract class TowersBehaviour : MonoBehaviour
     public Transform lookAtObject;
     public float damage;
     public GameObject bullet;
-    public float timeBetweenShoot;
+    [Header("Интервал атаки")]
+    public float timeBetweenAttack;
 
-    public abstract IEnumerator Shoot();
+    public abstract IEnumerator Attack();
 }

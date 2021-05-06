@@ -10,7 +10,7 @@ public class EnemiesMover : MonoBehaviour
     private Transform target; // 
     private Vector3 originalTarget;
     private NavMeshAgent meshAgent;
-    private NavMeshPath path; // путь
+    internal NavMeshPath path; // путь
 
     private GameObject currentObstacle; // текущее препятствие
 
@@ -19,6 +19,7 @@ public class EnemiesMover : MonoBehaviour
     //Временные переменные
     private int hit;
     private Text text;
+    public float sp;
 
     void Start()
     {
@@ -30,15 +31,15 @@ public class EnemiesMover : MonoBehaviour
         originalTarget = target.position;
         StartCoroutine(UpdateDestination());
         path = new NavMeshPath();
-    }
 
-    
+        sp = meshAgent.speed;
+    }
 
     /// <summary>
     /// Пересчет пути
     /// </summary>
     /// <returns></returns>
-    IEnumerator UpdateDestination()
+    public IEnumerator UpdateDestination()
     {
         if (!isDestroy)
             meshAgent.SetDestination(originalTarget);
@@ -51,7 +52,9 @@ public class EnemiesMover : MonoBehaviour
         if (path.status == NavMeshPathStatus.PathPartial/*path.status != NavMeshPathStatus.PathComplete*/)
         {
             ChangeTargetPosition(PlacingBuilding.instance.buildObs);
-            StartCoroutine(DestroyObstacle());
+            //StartCoroutine(DestroyObstacle());
+            //DestroyObstacle();
+
         }
         if (path.status == NavMeshPathStatus.PathComplete)
         {
@@ -60,6 +63,7 @@ public class EnemiesMover : MonoBehaviour
         }
 
         StartCoroutine(UpdateDestination());
+        meshAgent.speed = sp;
     }
 
     /// <summary>
@@ -90,14 +94,14 @@ public class EnemiesMover : MonoBehaviour
     /// Уничтожение препятствия
     /// </summary>
     /// <returns></returns>
-    IEnumerator DestroyObstacle()
+    public void DestroyObstacle()
     {
         if(currentObstacle != null)
         {
-            if ((currentObstacle.transform.position - meshAgent.transform.position).magnitude < 1.5f && currentObstacle != null)
+            if ((currentObstacle.transform.position - meshAgent.transform.position).magnitude < 1.5f /*&& currentObstacle != null*/)
             {
-                meshAgent.speed = 0;
-                if (/*hit >= 4*/currentObstacle.GetComponent<BuildingProperties>().health <= 1)
+                //meshAgent.speed = 0;
+                if (currentObstacle.GetComponent<BuildingProperties>().BuildingHealthState <= 1)
                 {
                     foreach (var obs in PlacingBuilding.instance.Way)
                     {
@@ -114,19 +118,14 @@ public class EnemiesMover : MonoBehaviour
                     text.text = string.Empty;
                     hit = 0;
                     isDestroy = false;
-                    meshAgent.speed = 0.5f;
-                    yield break;
+                    //meshAgent.speed = 0.5f;
+                    //yield break;
                 }
 
                 text.text = $"Attack! {hit}";
                 hit++;
             }
-            if (/*(closest.transform.position - meshAgent.transform.position).magnitude > 1.5f 
-                && */ path.status == NavMeshPathStatus.PathPartial)
-                meshAgent.speed = 0.5f;
         }
-
-        yield return new WaitForSeconds(1f);
     }
 
     private void OnTriggerEnter(Collider other)
