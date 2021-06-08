@@ -13,6 +13,8 @@ TagManager:
   - Enemy
   - Tower
   - Bullet
+  - Map
+  - Floor
   layers:
   - Default
   - TransparentFX
@@ -25,7 +27,7 @@ TagManager:
   - Ignore NavMesh
   - Target
   - Obstacle
-  - 
+  - Clickable
   - 
   - 
   - 

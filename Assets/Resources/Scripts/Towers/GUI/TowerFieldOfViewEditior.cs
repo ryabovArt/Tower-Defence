@@ -19,7 +19,7 @@ public class TowerFieldOfViewEditior : Editor
 
         Vector3 viewAngleC = towerField.DirectionFromAngle(towerField.viewAngle_2 / 2, false);
         Vector3 viewAngleD = towerField.DirectionFromAngle(-towerField.viewAngle_2 / 2, false);
-
+        
         Vector3 viewAngleE = towerField.DirectionFromAngle(towerField.viewAngle_3 / 2 - 90f, false);
         Vector3 viewAngleF = towerField.DirectionFromAngle(-towerField.viewAngle_3 / 2 - 90f, false);
 

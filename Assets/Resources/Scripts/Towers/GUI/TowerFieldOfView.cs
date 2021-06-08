@@ -37,7 +37,7 @@ public class TowerFieldOfView : MonoBehaviour
     {
         neareCells = GetComponentInParent<CheckNearestCells>();
         StartCoroutine(FindTargetsWithDelay(0.2f));
-        
+
     }
 
     IEnumerator FindTargetsWithDelay(float delay)
@@ -75,7 +75,7 @@ public class TowerFieldOfView : MonoBehaviour
         if (!isChooseAttackedMob && targets.Length > 0)
         {
             attackedMob = GetClosestEnemy(targets);
-            attackedMob.GetComponent<EnemiesMover>().sp = 0.3f;
+            //attackedMob.GetComponent<EnemiesMover>().sp = 0.3f;
             isChooseAttackedMob = true;
         }
     }
@@ -98,30 +98,34 @@ public class TowerFieldOfView : MonoBehaviour
 
                 Debug.DrawLine(currentClosestCell.position, attackedMob.position, Color.blue, 3f);
 
-                if (Vector3.Distance(attackedMob.position, currentClosestCell.position) < 1f && attackedMob != null)
+                if (Vector3.Distance(attackedMob.position, currentClosestCell.position) < 1.2f && attackedMob != null)
                 {
                     if (currentClosestCell.position.x < transform.position.x
                      && currentClosestCell.position.z == transform.position.z) // клетка слева
                     {
                         LeftSector(transform.right, directionToTarget, target);
+                        print("left");
                     }
 
                     if (currentClosestCell.position.x == transform.position.x
                          && currentClosestCell.position.z > transform.position.z) // клетка сверху
                     {
                         TopSector(transform.forward, directionToTarget, target);
+                        print("up");
                     }
 
                     if (currentClosestCell.position.x < transform.position.x
                              && currentClosestCell.position.z == transform.position.z) // клетка справа
                     {
                         RightSector(transform.right, directionToTarget, target);
+                        print("right");
                     }
 
                     if (currentClosestCell.position.x == transform.position.x
                              && currentClosestCell.position.z < transform.position.z) // клетка снизу
                     {
                         BottomSector(-transform.forward, directionToTarget, target);
+                        print("bottom");
                     }
                 }
             }

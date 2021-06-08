@@ -6,12 +6,13 @@ public class TowerTrigger : MonoBehaviour
 {
     public Animator towerAnimator;
     private GameObject currentTarget;
+    public Transform fieldOfWiew; // трансформ зоны видимости для того, чтобы враг был в пределах сектора
+    public Transform turrel; // трансформ башни для того, чтобы она всегда смотрела на врага
     private bool lockEnemy;
     private SphereCollider collider;
 
-    private enum State { PATROL, ATTACK};
+    private enum State { PATROL, ATTACK };
     private State state = State.PATROL;
-    private State lastState = State.PATROL;
 
     private void Start()
     {
@@ -32,7 +33,7 @@ public class TowerTrigger : MonoBehaviour
     {
         if (other.CompareTag("Enemy") && !lockEnemy && !PlacingBuilding.instance.FlyingBuilding)
         {
-            GetComponent<TowerShoot>().target = other.gameObject.transform;
+            //GetComponent<TowerShoot>().target = other.gameObject.transform;
             currentTarget = other.gameObject;
             lockEnemy = true;
             state = State.ATTACK;
@@ -44,7 +45,7 @@ public class TowerTrigger : MonoBehaviour
     {
         if (other.CompareTag("Enemy")/* && other.gameObject == currentTarget*/)
         {
-            GetComponent<TowerShoot>().target = null;
+            //GetComponent<TowerShoot>().target = null;
             currentTarget = null;
             lockEnemy = !lockEnemy;
         }
@@ -55,23 +56,22 @@ public class TowerTrigger : MonoBehaviour
     /// </summary>
     private void SetAnimation()
     {
-        switch(state)
+        switch (state)
         {
             case State.PATROL:
-                //Debug.Log("patrol");
-                towerAnimator.enabled = true;
-                towerAnimator.Play("Patrol");
+                if (StartWaves.isGenerateWaves)
+                {
+                    //Debug.Log("patrol");
+                    towerAnimator.enabled = true;
+                    towerAnimator.Play("Patrol");
+                }
                 break;
             case State.ATTACK:
                 //Debug.Log("attack");
+                //fieldOfWiew.LookAt(currentTarget.transform);
+                turrel.LookAt(currentTarget.transform);
                 towerAnimator.enabled = false;
                 break;
         }
-    }
-
-    private void SetState(State to)
-    {
-        lastState = state;
-        state = to;
     }
 }

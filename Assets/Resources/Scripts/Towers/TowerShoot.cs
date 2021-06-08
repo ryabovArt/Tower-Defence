@@ -59,6 +59,9 @@ public class TowerShoot : TowersBehaviour
                 {
                     blt = GameObject.Instantiate(bullet, shootElement.position, Quaternion.identity) as GameObject;
                     blt.GetComponent<BulletTower>().target = visiblrTarget;
+                    visiblrTarget.GetComponent<EnemyBasicClass>().RecieveDamage(damage);
+                    Debug.Log(visiblrTarget.gameObject.GetComponent<Enemy>());
+                    //target.gameObject.GetComponent<Enemy>().RecieveDamage(damage);
                     if (visiblrTarget == null) Destroy(blt.gameObject);
                 }
             }

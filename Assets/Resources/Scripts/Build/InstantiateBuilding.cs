@@ -8,6 +8,7 @@ public class InstantiateBuilding : MonoBehaviour
     [SerializeField] private List<AssetItem> Items; // список построек
     [SerializeField] private BuildingsCell buildingsCell; // ячейка с постройкой
     [SerializeField] private Transform container; // место для расположения построек(UI)
+    [SerializeField] private Transform transformParent;
 
     public void OnEnable()
     {
@@ -28,8 +29,9 @@ public class InstantiateBuilding : MonoBehaviour
         items.ForEach(item =>
         {
             var cell = Instantiate(buildingsCell, container);
+            cell.Init(transformParent);
             cell.Render(item);
-            cell.GetComponent<Button>().onClick.AddListener(() => cell.TowerChoose());
+            //cell.GetComponent<Button>().onClick.AddListener(() => cell.TowerChoose());
         });
     }
 }

@@ -7,6 +7,8 @@ public class BulletTower : MonoBehaviour
 {
     [SerializeField] private float speed;
     [SerializeField] private float radius;
+    internal float Damage;
+    internal DamageTypes damageType;
 
     [SerializeField] private float force;
     internal Transform target;
@@ -20,14 +22,18 @@ public class BulletTower : MonoBehaviour
             transform.position = Vector3.MoveTowards(transform.position, target.position, speed * Time.deltaTime);
             transform.LookAt(target);
         }
+        else
+        {
+            Destroy(this.gameObject);
+        }
     }
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Enemy"))
         {
+            other.GetComponent<EnemyBasicClass>().RecieveDamage(Damage,damageType);
             Destroy(gameObject);
-            //Explode();
         }
     }
 

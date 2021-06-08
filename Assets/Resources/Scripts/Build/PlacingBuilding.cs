@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
@@ -8,7 +9,7 @@ public class PlacingBuilding: MonoBehaviour
 {
     public static PlacingBuilding instance = null;
 
-    public Vector2Int gridSize = new Vector2Int(11, 11);
+    public Vector2Int gridSize = new Vector2Int(21, 15);
 
     [SerializeField] private GameObject[] wall; //кубы из которых состоит путь
     private List<GameObject> way = new List<GameObject>(); //список кубов, по которым будет проходить путь
@@ -20,28 +21,32 @@ public class PlacingBuilding: MonoBehaviour
     private List<GameObject> towerPoint = new List<GameObject>(); //список кубов на которых стоят башни
 
     private DrawBuildingGrid[,] grid;
-    private GameObject flyingBuilding; //строение в момент когда зажата ЛКМ
+    private GameObject flyingBuilding; //строение в момент когда нажата ЛКМ
     public GameObject FlyingBuilding
     {
         get { return flyingBuilding; }
+        set { flyingBuilding = value; }
     }
 
     private Camera mainCamera;
-    private Animator towerAnimator;
+    internal Animator towerAnimator;
 
     internal List<GameObject> buildObs = new List<GameObject>(); //построенные препятствия
     private GameObject temp = null; // объект для добавления препятствия в список построенных
 
     [SerializeField] private Material wayMaterial; //материал кубов из которых состоит путь
     [SerializeField] private Material towerPlaceMaterial; //материал кубов на которые ставятся башни
+    [SerializeField] private Material canPlaceBuildingMaterial; //материал кубов из которых состоит путь
 
-    private bool isBuilt = false; // построена ли башня
+    public bool isBuilt = false; // построена ли башня
     private Collider coll; // коллайдер строения
 
     private TowerTrigger towerTrigger; // ссылка на скрипт
     private TowerShoot towerShoot; // ссылка на скрипт
     NavMeshObstacle meshObstacle;
-    int value = 0;
+
+    private GameObject tempCell;
+    private int value = 0;
 
     private void Awake()
     {
@@ -51,6 +56,9 @@ public class PlacingBuilding: MonoBehaviour
 
     void Start()
     {
+        //manaScript = FindObjectOfType<ManaScript>();
+        ChangeScene.OnLevelStarted += OnLevelStarted;
+        //towerTrigger = GameObject.FindGameObjectWithTag("GameController").GetComponent<TowerTrigger>();
         grid = new DrawBuildingGrid[gridSize.x, gridSize.y];
         mainCamera = Camera.main;
         for (int i = 0; i < wall.Length; i++)
@@ -60,13 +68,17 @@ public class PlacingBuilding: MonoBehaviour
                 way.Add(wall[i]);
                 wall[i].GetComponent<Renderer>().material = wayMaterial;
             }
-            else if(wall[i].tag == "TowerPlace")
+            else if (wall[i].tag == "TowerPlace")
             {
                 towerPoint.Add(wall[i]);
                 wall[i].GetComponent<Renderer>().material = towerPlaceMaterial;
             }
         }
+    }
 
+    private void OnLevelStarted()
+    {
+        buildObs = LevelHandler.Instance.Obst;
     }
 
     void Update()
@@ -74,12 +86,12 @@ public class PlacingBuilding: MonoBehaviour
         if (flyingBuilding != null)
         {
             MovingFlyingBuilding();
-            DeactivateBuildingProperties();
+            //DeactivateBuildingProperties();
         }
-        else
-        {
-            ActivateBuildingProperties(value);
-        }
+        //else if (StartWaves.isGenerateWaves == true)
+        //{
+        //    //ActivateBuildingProperties(value);
+        //}
     }
 
     /// <summary>
@@ -103,44 +115,12 @@ public class PlacingBuilding: MonoBehaviour
             if (yPos < 0 || yPos >= 11) isAvailable = false;
 
             flyingBuilding.transform.position = new Vector3(xPos, 0, yPos);
+            //print(flyingBuilding.name);
 
-            if (isAvailable && Input.GetMouseButtonUp(0))
+            if (!isAvailable && Input.GetMouseButtonUp(0))
             {
-                SearchPlaceForBuilding();
-            }
-        }
-    }
-
-    /// <summary>
-    /// Поиск места для строения
-    /// </summary>
-    private void SearchPlaceForBuilding()
-    {
-        if (BuildingsCell.isTowerSelected == false)
-        {
-            foreach (var obs in way)
-            {   
-                if (Vector3.Distance(flyingBuilding.transform.position, obs.transform.position) < 0.3f
-                    && obs.tag != "FullPlace")
-                {
-                    flyingBuilding = null;
-                    obs.tag = "FullPlace";
-                    return;
-                }
-            }
-        }
-        else
-        {
-            foreach (var twr in towerPoint)
-            {
-                if (Vector3.Distance(flyingBuilding.transform.position, twr.transform.position) < 0.3f
-                    && twr.tag != "FullPlace")
-                {
-                    flyingBuilding = null;
-                    twr.tag = "FullPlace";
-                    BuildingsCell.isTowerSelected = false;
-                    return;
-                }
+                Destroy(flyingBuilding.gameObject);
+                //SearchPlaceForBuilding();
             }
         }
     }
@@ -151,66 +131,100 @@ public class PlacingBuilding: MonoBehaviour
     /// <param name="building"> объект строения </param>
     public void StartPlacingBuilding(GameObject building)
     {
-        if (flyingBuilding != null) 
+        if (flyingBuilding != null)
             Destroy(flyingBuilding);
- 
+
         flyingBuilding = Instantiate(building);
     }
 
     /// <summary>
-    /// Деактивируем свойства строения для того, чтобы оно
-    /// не реагировало на противников в момент перемещения за курсором перед постройкой
+    /// Поиск места для строения
     /// </summary>
-    private void DeactivateBuildingProperties()
+    public void EndPlacingBuilding()
     {
-        if (!isBuilt)
+        foreach (var element in wall)
         {
-            coll = flyingBuilding.GetComponent<BoxCollider>();
-            coll.isTrigger = true;
+            if (Vector3.Distance(flyingBuilding.transform.position, element.transform.position) < 0.3f)
+            {
+                if (BuildingsCell.isTowerSelected == false)
+                {
+                    //var t = flyingBuilding.GetComponent<TowersBehaviour>().buildingCost;
+                    if (element.CompareTag("Way") && !element.CompareTag("FullPlace"))
+                    {
+                        var t = flyingBuilding.GetComponent<TowersBehaviour>().buildingCost;
+                        if (ManaScript.Instance.Build(t))
+                        {
+                            //Debug.Log(ManaScript.Instance.mana);
+                            flyingBuilding = null;
+                            element.tag = "FullPlace";
+                            return;
+                        }
+                        else
+                        {
+                            Destroy(flyingBuilding.gameObject);
+                        }
+                    }
+                    else if (!element.CompareTag("Way") || element.CompareTag("FullPlace"))
+                    {
+                        Destroy(flyingBuilding.gameObject);
+                    }
+                }
+                else
+                {
+                    if (!element.CompareTag("Way") && !element.CompareTag("FullPlace"))
+                    {
 
-            if (flyingBuilding.CompareTag("Tower"))
-            {
-                //towerTrigger = flyingBuilding.GetComponent<TowerTrigger>();
-                //towerTrigger.enabled = false;
-                towerShoot = flyingBuilding.GetComponentInChildren<TowerShoot>();
-                towerShoot.isShoot = true;
-                towerAnimator = flyingBuilding.GetComponent<Animator>();
-                //towerAnimator.enabled = false;
-                value = 1;
+                        //Debug.Log(manaScript.mana);
+                        //Debug.Log(manaScript.Build(t));
+                        var t = flyingBuilding.GetComponent<TowersBehaviour>().buildingCost;
+                        if (ManaScript.Instance.Build(t))
+                        {
+                            flyingBuilding = null;
+                            element.tag = "FullPlace";
+                            return;
+                        }
+                        else
+                        {
+                            Destroy(flyingBuilding.gameObject);
+                        }
+
+                    }
+                    else if (element.CompareTag("Way") || element.CompareTag("FullPlace"))
+                    {
+                        Destroy(flyingBuilding.gameObject);
+                    }
+                }
             }
-            else if (flyingBuilding.CompareTag("Obstacle"))
-            {
-                meshObstacle = flyingBuilding.GetComponent<NavMeshObstacle>();
-                meshObstacle.enabled = false;
-                value = 2;
-                temp = flyingBuilding;
-            }
-            
-            isBuilt = true;
         }
     }
 
     /// <summary>
-    /// Активируем свойства строения после постройки
+    /// Подсвечиваем клетку
     /// </summary>
-    private void ActivateBuildingProperties(int val)
+    public void CellsHighlighting()
     {
-        if (isBuilt)
+        if (BuildingsCell.isTowerSelected == false)
         {
-            if(val == 1)
-            {
-                coll.isTrigger = false;
-                //towerTrigger.enabled = true;
-                towerShoot.isShoot = false;
-                //towerAnimator.enabled = true;
-            }
-            if (val == 2)
-            {
-                meshObstacle.enabled = true;
-                buildObs.Add(temp);
-            }
+            foreach (var obs in Way) obs.GetComponent<Renderer>().material.color = Color.green;
+        }
+        else
+        {
+            foreach (var twr in towerPoint) twr.GetComponent<Renderer>().material.color = Color.green;
+        }
+    }
 
-            isBuilt = false;
+    /// <summary>
+    /// Убираем подсветку клеток
+    /// </summary>
+    public void RemoveCellsHighlighting()
+    {
+        if (BuildingsCell.isTowerSelected == false)
+        {
+            foreach (var obs in Way) obs.GetComponent<Renderer>().material.color = wayMaterial.color;
+        }
+        else
+        {
+            foreach (var twr in towerPoint) twr.GetComponent<Renderer>().material.color = towerPlaceMaterial.color;
         }
     }
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BuildingProperties : MonoBehaviour
 {
-    [SerializeField] private AssetItem item;
+    [HideInInspector] public AssetItem item;
 
     [SerializeField] private GameObject buildingObj;
     public GameObject BuildingObj { get { return buildingObj; } }

@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 public class EnemiesMover : MonoBehaviour
 {
-    private Transform target; // 
+    private Transform target;
     private Vector3 originalTarget;
     private NavMeshAgent meshAgent;
     internal NavMeshPath path; // путь
@@ -19,12 +19,13 @@ public class EnemiesMover : MonoBehaviour
     //Временные переменные
     private int hit;
     private Text text;
-    public float sp;
+    private float sp;
 
     void Start()
     {
-        text = WaveSpawn.instance.text;
-        target = WaveSpawn.instance.target;
+        target = GameObject.FindGameObjectWithTag("Target").transform;
+        //text = SpawnWaves.instance.text;
+        //target = SpawnWaves.instance.target;
         meshAgent = GetComponent<NavMeshAgent>();
         meshAgent.SetDestination(target.position);
         EnemiesOnScene.instance.enemiesOnScene.Add(this.gameObject);
@@ -75,18 +76,22 @@ public class EnemiesMover : MonoBehaviour
     {
         float distance = Mathf.Infinity;
         Vector3 position = transform.position;
+        GameObject currentObstacle = new GameObject();
         foreach (GameObject obj in objects)
         {
-            Vector3 diff = obj.transform.position - position;
-            float currentDis = diff.sqrMagnitude;
+            float currentDis = Vector3.Distance(obj.transform.position, position);
             if (currentDis < distance)
             {
                 currentObstacle = obj;
                 distance = currentDis;
                 isDestroy = true;
-                meshAgent.SetDestination(currentObstacle.transform.position); 
             }
         }
+        if (currentObstacle != null)
+        {
+            meshAgent.SetDestination(currentObstacle.transform.position);
+        }
+        
         return target;
     }
 
@@ -122,22 +127,11 @@ public class EnemiesMover : MonoBehaviour
                     //yield break;
                 }
 
-                text.text = $"Attack! {hit}";
+                //text.text = $"Attack! {hit}";
                 hit++;
             }
         }
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.gameObject.CompareTag("Target"))
-        {
-            Destroy(gameObject);
-            //Debug.Log("222");
-        }
-        //else if(other.CompareTag("Bullet"))
-        //{
-        //    GetComponent<EnemyDamage>().GetDamage();
-        //}
-    }
+
 }

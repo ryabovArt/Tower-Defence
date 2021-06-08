@@ -6,39 +6,49 @@ using System.Text;
 
 public class SpawnWaves : MonoBehaviour
 {
-   public static SpawnWaves instance = null;
+   //public static SpawnWaves instance = null;
 
-    private void Awake()
-    {
-        if (instance == null) instance = this;
-        else Destroy(gameObject);
-    }
+   // private void Awake()
+   // {
+   //     if (instance == null) instance = this;
+   //     else Destroy(gameObject);
+   // }
 
-    public Transform target;
+    //public Transform target;
 
-    // temp
-    public Text text;
+    //// temp
+    //public Text text;
 
     [System.Serializable]
     public class Wave
     {
         [Header("Название волны")]
         public string name;
-        [Header("Время между спавном врагов (чем меньше значение, тем больше задержка)")]
-        public float rate;
-        [Header("Время задержки между спавном врагов")]
-        public string timeDelay;
+
+        public SpawnPoint spawnPoint;
+    }
+    public Wave[] waves;
+
+    [System.Serializable]
+    public class SpawnPoint
+    {
         [Header("Точка спавна")]
         public Transform spawnPoint;
-        [Header("Вид врага")]
-        public List<AssetEnemy> enemyPrefab = new List<AssetEnemy>();
+        public Enemy[] enemy;
     }
-    public Wave[] waves; 
+
+    [System.Serializable]
+    public class Enemy
+    {
+        [Header("Вид врага")]
+        public AssetEnemy enemyPrefab;
+        [Header("Время задержки между спавном врагов")]
+        public float delay;
+    }
 
     public enum SpawnState { SPAWNING, WAITING, COUNTING }; // состояния врагов
 
     private int currentWave;
-    private int enemyIndex;
     private float delaySpawnCorutine;
 
     [Header("Время перед началом волны")]
@@ -52,30 +62,33 @@ public class SpawnWaves : MonoBehaviour
     private void Start()
     {
         waveCountdown = timeBetweenWaves;
-        delaySpawnCorutine = 1f / waves[currentWave].rate;
     }
 
     private void Update()
     {
-        if (state == SpawnState.WAITING) // если враги живы
+        if (StartWaves.isGenerateWaves)
         {
-            if (!isEnemyAlive()) // действия если врагов нет
+            if (state == SpawnState.WAITING) // если враги живы
             {
-                WaveCompleted();
+                if (!isEnemyAlive()) // действия если врагов нет
+                {
+                    WaveCompleted();
+                }
+                else return;
             }
-            else return;
-        }
 
-        if (waveCountdown <= 0)
-        {
-            if (state != SpawnState.SPAWNING)
+            if (waveCountdown <= 0)
             {
-                StartCoroutine(SpawnWave(waves[currentWave], waves[currentWave].enemyPrefab));
+                if (state != SpawnState.SPAWNING)
+                {
+                    if (waveCountdown != 0 && waves.Length >= currentWave)
+                        StartCoroutine(SpawnWave());
+                }
             }
-        }
-        else
-        {
-            waveCountdown -= Time.deltaTime;
+            else
+            {
+                waveCountdown -= Time.deltaTime;
+            }
         }
     }
 
@@ -87,12 +100,17 @@ public class SpawnWaves : MonoBehaviour
         state = SpawnState.COUNTING;
         waveCountdown = timeBetweenWaves;
 
-        if (currentWave + 1 > waves.Length - 1)
-        {
-            currentWave = 0;
-        }
+        //if (currentWave + 1 > waves.Length - 1)
+        //{
+        //    currentWave = 0;
+        //}
+        ++currentWave;
 
-        currentWave++;
+        if (currentWave == waves.Length)
+        {
+            FindObjectOfType<ChangeScene>().Win();
+            Destroy(gameObject);
+        } 
     }
 
     /// <summary>
@@ -116,42 +134,20 @@ public class SpawnWaves : MonoBehaviour
     /// <summary>
     /// События, происходящие в текущей волне
     /// </summary>
-    /// <param name="wave">текущая волна</param>
-    /// <param name="enemy">враги</param>
     /// <returns></returns>
-    IEnumerator SpawnWave(Wave wave, List<AssetEnemy> enemy)
-    {
+    IEnumerator SpawnWave()
+    {        
         state = SpawnState.SPAWNING;
-        enemyIndex = 0;
 
-        for (int i = 0; i < enemy.Count; i++)
+        for (int i = 0; i < waves[currentWave].spawnPoint.enemy.Length; i++)
         {
-            if (enemy[i] == null && waves[currentWave].timeDelay != string.Empty)
-            // берем первую цифру в строке и присваиваем ее переменной, отвечающей за задержку между спавном врагов
-            {
-                StringBuilder sb = new StringBuilder(waves[currentWave].timeDelay);
-                char ch = sb[0];
+            SpawnEnemy(waves[currentWave].spawnPoint.enemy[i].enemyPrefab, waves[currentWave].spawnPoint.spawnPoint);
 
-                if (waves[currentWave].timeDelay.Length > 1)
-                {
-                    sb.Remove(0, 2);
-                }
-
-                enemy.Remove(enemy[i]);
-                waves[currentWave].timeDelay = sb.ToString();
-                
-                delaySpawnCorutine = float.Parse(ch.ToString());
-                yield return new WaitForSeconds(delaySpawnCorutine);
-                delaySpawnCorutine = 1f / waves[currentWave].rate;
-            }
-
-            SpawnEnemy(wave.enemyPrefab, wave.spawnPoint);
-
+            delaySpawnCorutine = waves[currentWave].spawnPoint.enemy[i].delay;
             yield return new WaitForSeconds(delaySpawnCorutine);
         }
 
         state = SpawnState.WAITING;
-
         yield break;
     }
     
@@ -160,13 +156,8 @@ public class SpawnWaves : MonoBehaviour
     /// </summary>
     /// <param name="enemy">враги</param>
     /// <param name="point">точка спавна врага</param>
-    private void SpawnEnemy(List<AssetEnemy> enemy, Transform point)
+    private void SpawnEnemy(AssetEnemy enemy, Transform point)
     {
-
-        if (enemyIndex <= enemy.Count)
-        {
-            Instantiate(enemy[enemyIndex].EnemyObject, point.position, Quaternion.identity);
-            enemyIndex++;
-        }
+        Instantiate(enemy.EnemyObject, point.position, Quaternion.identity);
     }
 }

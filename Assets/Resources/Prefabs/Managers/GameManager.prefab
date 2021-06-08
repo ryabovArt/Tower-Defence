@@ -43,14 +43,34 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbe8496f6fecd1c4a82db8bd44738706, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyPrefab:
-  - {fileID: 11400000, guid: 31ad3ce2d6efdc84c8971124c28102e1, type: 2}
-  - {fileID: 11400000, guid: d83164b83e9624b43a0871973332f318, type: 2}
-  spawnPoint:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
   target: {fileID: 0}
-  betweenWaweDelayMain: 2
   text: {fileID: 0}
+  waves:
+  - name: 
+    rate: 0
+    timeDelay: 
+    spawnPoint:
+      spawnPoint: {fileID: 0}
+      enemy:
+      - enemyPrefab: {fileID: 11400000, guid: 31ad3ce2d6efdc84c8971124c28102e1, type: 2}
+        delay: 1
+      - enemyPrefab: {fileID: 11400000, guid: d83164b83e9624b43a0871973332f318, type: 2}
+        delay: 2
+      - enemyPrefab: {fileID: 11400000, guid: 31ad3ce2d6efdc84c8971124c28102e1, type: 2}
+        delay: 1
+      - enemyPrefab: {fileID: 11400000, guid: 31ad3ce2d6efdc84c8971124c28102e1, type: 2}
+        delay: 0
+  - name: 
+    rate: 0
+    timeDelay: 
+    spawnPoint:
+      spawnPoint: {fileID: 0}
+      enemy:
+      - enemyPrefab: {fileID: 11400000, guid: d83164b83e9624b43a0871973332f318, type: 2}
+        delay: 2
+      - enemyPrefab: {fileID: 11400000, guid: d83164b83e9624b43a0871973332f318, type: 2}
+        delay: 1
+      - enemyPrefab: {fileID: 11400000, guid: d83164b83e9624b43a0871973332f318, type: 2}
+        delay: 0
+  timeBetweenWaves: 1
+  waveCountdown: 0
