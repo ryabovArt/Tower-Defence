@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemyName: Enemy_2
   enemyObject: {fileID: 8402161726248578973, guid: cbc0d30dc10627247b660266f2ce0177, type: 3}
-  enemyHealth: 151
+  enemyHealth: 50
   damage: 1
   armour: 0
-  speed: 1.7
+  speed: 2
   reward: 5
   attackRate: 1

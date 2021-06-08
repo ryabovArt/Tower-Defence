@@ -12,11 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 335719386e121f5408d9bcb7f6198c43, type: 3}
   m_Name: Enemy_1
   m_EditorClassIdentifier: 
-  enemyName: Enemy_1
+  enemyName: "\u0422\u043E\u043B\u0441\u0442\u0430\u044F \u043C\u044B\u0448\u044C"
   enemyObject: {fileID: 8402161726248578973, guid: 5ef3964662ad3b549b45f8caf4975053, type: 3}
-  enemyHealth: 151
+  enemyHealth: 90
   damage: 1
   armour: 0
-  speed: 1.2
-  reward: 7
+  speed: 1
+  reward: 5
   attackRate: 1

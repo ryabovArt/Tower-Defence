@@ -727,10 +727,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lookAtObject: {fileID: 0}
-  damage: 50
+  damage: 20
   DamageType: 3
   bullet: {fileID: 8105159009470134273, guid: 77070bee51616ba46b19a45ed0f6c190, type: 3}
-  buildingCost: 20
+  buildingCost: 10
   timeBetweenAttack: 1
   shootElement: {fileID: 0}
   target: {fileID: 0}

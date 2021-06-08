@@ -17,4 +17,6 @@ MonoBehaviour:
   buildingImage: {fileID: 0}
   dragBuilding: {fileID: 0}
   buildingObject: {fileID: 0}
-  buildingHealth: 0
+  BuildingHealth: 0
+  towerDiscriptionImage: {fileID: 0}
+  towerDiscriptionText: "\u0442\u0435\u0441\u0442 1"

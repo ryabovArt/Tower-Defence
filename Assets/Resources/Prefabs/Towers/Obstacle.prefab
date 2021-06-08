@@ -328,7 +328,7 @@ NavMeshObstacle:
   m_Extents: {x: 0.5, y: 0.5, z: 0.5}
   m_MoveThreshold: 0.1
   m_Carve: 0
-  m_CarveOnlyStationary: 0
+  m_CarveOnlyStationary: 1
   m_Center: {x: 0, y: 0.5, z: 0}
   m_TimeToStationary: 0.5
 --- !u!114 &-8799344038672175965
@@ -362,7 +362,7 @@ MonoBehaviour:
   damage: 0
   DamageType: 0
   bullet: {fileID: 0}
-  buildingCost: 10
+  buildingCost: 35
   timeBetweenAttack: 0
 --- !u!114 &3035188108759426442
 MonoBehaviour:

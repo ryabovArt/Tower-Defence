@@ -17,5 +17,6 @@ MonoBehaviour:
   buildingImage: {fileID: 21300000, guid: 2a5bc553995476945a99c948644eb75f, type: 3}
   dragBuilding: {fileID: 0}
   buildingObject: {fileID: 100018, guid: 5a3c0c2143c73054c8de24055e245052, type: 3}
-  buildingCost: 20
   BuildingHealth: 0
+  towerDiscriptionImage: {fileID: 0}
+  towerDiscriptionText: "\u0442\u0435\u0441\u0442 3"

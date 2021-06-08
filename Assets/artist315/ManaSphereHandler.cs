@@ -40,21 +40,23 @@ public class ManaSphereHandler : MonoBehaviour
         Debug.Log("Starts");
         while (isRunning)
         {
-            Debug.Log("SpawnSphere");
+            //Debug.Log("SpawnSphere");
             yield return new WaitForSeconds(Random.Range(min, max));
             int r = Random.Range(0, LevelHandler.Instance.Path.Count);
             GameObject pos = LevelHandler.Instance.Path[r];
             var s = Instantiate(manaSphere, pos.transform.position + yOffset, Quaternion.Euler(Vector3.zero));
-            int rand = Random.Range(0,1);
-            if (r == 0)
+            int rand = Random.Range(0,2);
+            if (rand == 0)
             {
                 s.GetComponent<ManaSphere>().ManaIncome = manaOrHealthIncome[0];
                 s.GetComponent<ManaSphere>().HealthIncome = 0;
+                Debug.Log("Mana");
             }
             else
             {
                 s.GetComponent<ManaSphere>().ManaIncome =0;
                 s.GetComponent<ManaSphere>().HealthIncome = manaOrHealthIncome[1];
+                Debug.Log("Health");
             }
             
         }

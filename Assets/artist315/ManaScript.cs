@@ -16,7 +16,7 @@ public class ManaScript : Singleton<ManaScript>
     private void Start()
     {
         mana = startMana;
-        manaText.text = mana.ToString();
+        updateUI();
         ChangeScene.OnLevelStarted += OnLevelStarted;
         
     }

@@ -693,10 +693,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lookAtObject: {fileID: 672565083377037422}
-  damage: 1
+  damage: 2
   DamageType: 0
   bullet: {fileID: 8105159009470134273, guid: 77070bee51616ba46b19a45ed0f6c190, type: 3}
-  buildingCost: 50
+  buildingCost: 25
   timeBetweenAttack: 0.1
   shootElement: {fileID: 672565083377037424}
   target: {fileID: 0}

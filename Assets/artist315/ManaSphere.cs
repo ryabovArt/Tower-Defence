@@ -25,6 +25,8 @@ public class ManaSphere : MonoBehaviour, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
+        Debug.Log(manaIncome);
+        Debug.Log(healthIncome);
         ManaScript.Instance.RewardInc(manaIncome);
         Goal.Instance.Heal(healthIncome);
         Destroy(this.gameObject);
